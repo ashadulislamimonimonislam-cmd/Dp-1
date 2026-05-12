@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; }
+.container { margin-top: 50px; padding: 20px; }
+.payment-options button { padding: 15px 30px; margin: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+.hidden { display: none; }
+#deposit-form { background: white; padding: 20px; border-radius: 10px; display: inline-block; margin-top: 20px; border: 1px solid #ddd; }
+input { display: block; width: 90%; margin: 10px auto; padding: 10px; }
+.submit-btn { background: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }

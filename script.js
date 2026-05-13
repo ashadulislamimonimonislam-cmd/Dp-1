@@ -1,5 +1,5 @@
 const BOT_TOKEN = '8804333424:AAFKquGlqxwYIsverAqf4XQFhTGipTX6acI';
-const CHAT_ID = '8804333424';
+const CHAT_ID = '6472310925';
 
 function openForm(method, number) {
     document.getElementById('deposit-form').classList.remove('hidden');

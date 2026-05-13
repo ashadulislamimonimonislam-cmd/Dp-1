@@ -1,112 +1,102 @@
 const BOT_TOKEN = '8804333424:AAFKquGlqxwYIsverAqf4XQFhTGipTX6acI';
 const CHAT_ID = '6472310925';
-
 const AT_TOKEN = 'patzXdNIbu5pFhUFY.6586827607f7dcaf7830c872e03f599acfc7f392c891693efd9cf73b7fbe5441';
 const AT_BASE_ID = 'appEiZDN5IcHoGjSe';
 const AT_TABLE_NAME = 'Table 1';
 
-// পেজ লোড হওয়ার সাথে সাথে চেক করবে আগে কোনো পেন্ডিং রিকোয়েস্ট আছে কি না
 window.onload = function() {
-    const savedRecordId = localStorage.getItem('last_payment_id');
-    if (savedRecordId) {
-        document.getElementById('deposit-form').classList.remove('hidden');
-        document.getElementById('status-text').style.display = "block";
-        document.getElementById('status-text').innerText = "পূর্বের রিকোয়েস্টের স্ট্যাটাস চেক করা হচ্ছে...";
-        checkStatus(savedRecordId);
+    const savedId = localStorage.getItem('last_payment_id');
+    if (savedId) {
+        // যদি আগে থেকেই কোনো ডিপোজিট বা উইথড্র পেন্ডিং থাকে
+        const type = localStorage.getItem('request_type');
+        if(type === 'withdraw') {
+            document.getElementById('withdraw-form').classList.remove('hidden');
+            checkStatus(savedId, 'w-status-text', 'withdraw-submit-btn');
+        } else {
+            document.getElementById('deposit-form').classList.remove('hidden');
+            checkStatus(savedId, 'status-text', 'submit-btn');
+        }
     }
 };
 
-function openForm(method, number) {
-    document.getElementById('deposit-form').classList.remove('hidden');
-    document.getElementById('method-title').innerText = method + " ডিপোজিট";
-    document.getElementById('display-number').innerText = number;
+function openWithdrawForm() {
+    document.getElementById('deposit-form').classList.add('hidden');
+    document.getElementById('withdraw-form').classList.remove('hidden');
 }
 
-async function processAll() {
-    const userId = document.getElementById('user-id').value;
-    const trxId = document.getElementById('trx-id').value;
-    const method = document.getElementById('method-title').innerText;
-    const statusText = document.getElementById('status-text');
-    const submitBtn = document.getElementById('submit-btn');
+// উইথড্র প্রসেস করার ফাংশন
+async function processWithdraw() {
+    const userId = document.getElementById('w-user-id').value;
+    const lastNum = document.getElementById('w-last-num').value;
+    const statusText = document.getElementById('w-status-text');
+    const submitBtn = document.getElementById('withdraw-submit-btn');
 
-    if (!userId || !trxId) {
-        alert("সবগুলো তথ্য দিন!");
-        return;
+    if (!userId || !lastNum) {
+        alert("সবগুলো তথ্য দিন!"); return;
     }
 
     submitBtn.disabled = true;
     statusText.style.display = "block";
-    statusText.innerText = "রিকোয়েস্ট পাঠানো হচ্ছে...";
+    statusText.innerText = "উইথড্র রিকোয়েস্ট পাঠানো হচ্ছে...";
 
     try {
-        const atUrl = `https://api.airtable.com/v0/${AT_BASE_ID}/${AT_TABLE_NAME}`;
         const atData = {
             fields: {
                 "Name": userId,
-                "Method": method,
-                "TrxID": trxId,
+                "Method": "Withdraw",
+                "TrxID": lastNum,
                 "Status": "Pending"
             }
         };
 
-        const atResponse = await fetch(atUrl, {
+        const response = await fetch(`https://api.airtable.com/v0/${AT_BASE_ID}/${AT_TABLE_NAME}`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${AT_TOKEN}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Authorization': `Bearer ${AT_TOKEN}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(atData)
         });
 
-        const result = await atResponse.json();
-        const recordId = result.id;
+        const result = await response.json();
+        localStorage.setItem('last_payment_id', result.id);
+        localStorage.setItem('request_type', 'withdraw');
 
-        // ব্রাউজারে আইডিটি সেভ করে রাখা
-        localStorage.setItem('last_payment_id', recordId);
-
-        const tgMsg = `🔔 নতুন ডিপোজিট!\n💎 মেথড: ${method}\n🆔 ইউজার: ${userId}\n🧾 TrxID: ${trxId}`;
+        const tgMsg = `⚠️ নতুন উইথড্র রিকোয়েস্ট!\n🆔 আইডি: ${userId}\n🔢 কোড/নাম্বার: ${lastNum}`;
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(tgMsg)}`);
 
-        if (atResponse.ok) {
-            checkStatus(recordId);
-        }
-    } catch (error) {
-        statusText.innerText = "Error! আবার ট্রাই করুন।";
+        checkStatus(result.id, 'w-status-text', 'withdraw-submit-btn');
+    } catch (e) {
+        alert("সমস্যা হয়েছে!");
         submitBtn.disabled = false;
     }
 }
 
-function checkStatus(recordId) {
-    const statusText = document.getElementById('status-text');
-    const submitBtn = document.getElementById('submit-btn');
-    
-    // বাটন হাইড করে দেওয়া যাতে নতুন রিকোয়েস্ট না পাঠাতে পারে চেক চলাকালীন
+// কমন স্ট্যাটাস চেকার
+function checkStatus(recordId, statusElementId, btnId) {
+    const statusText = document.getElementById(statusElementId);
+    const submitBtn = document.getElementById(btnId);
     if(submitBtn) submitBtn.style.display = "none";
+    statusText.style.display = "block";
 
     const interval = setInterval(async () => {
         try {
-            const checkUrl = `https://api.airtable.com/v0/${AT_BASE_ID}/${AT_TABLE_NAME}/${recordId}`;
-            const response = await fetch(checkUrl, {
+            const res = await fetch(`https://api.airtable.com/v0/${AT_BASE_ID}/${AT_TABLE_NAME}/${recordId}`, {
                 headers: { 'Authorization': `Bearer ${AT_TOKEN}` }
             });
-            const data = await response.json();
+            const data = await res.json();
             const currentStatus = data.fields.Status;
 
             if (currentStatus === "Confirm") {
-                statusText.innerHTML = "<span style='color:green'>✅ কনফার্ম হয়েছে!</span>";
-                localStorage.removeItem('last_payment_id'); // কাজ শেষ, ডিলিট করে দিন
                 clearInterval(interval);
-                setTimeout(() => location.reload(), 5000); // ৫ সেকেন্ড পর ফ্রেশ পেজ
+                localStorage.clear();
+                // নতুন পেজ ওপেন হবে
+                window.location.href = "success.html"; 
             } else if (currentStatus === "Reject") {
-                statusText.innerHTML = "<span style='color:red'>❌ রিজেক্ট করা হয়েছে!</span>";
-                localStorage.removeItem('last_payment_id');
                 clearInterval(interval);
-                setTimeout(() => location.reload(), 5000);
+                localStorage.clear();
+                statusText.innerHTML = "<span style='color:red'>❌ আপনার রিকোয়েস্ট রিজেক্ট করা হয়েছে।</span>";
+                setTimeout(() => location.reload(), 4000);
             } else {
-                statusText.innerText = "অনুগ্রহ করে অপেক্ষা করুন চেক করছে...";
+                statusText.innerText = "অ্যাডমিন ভেরিফাই করছে... অপেক্ষা করুন।";
             }
-        } catch (e) {
-            console.log("Checking...");
-        }
+        } catch (e) { console.log("Checking..."); }
     }, 5000);
 }

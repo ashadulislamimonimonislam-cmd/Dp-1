@@ -3,8 +3,8 @@ const CHAT_ID = '6472310925';
 
 // এয়ারটেবল কনফিগ
 const AT_TOKEN = 'patzXdNIbu5pFhUFY.6586827607f7dcaf7830c872e03f599acfc7f392c891693efd9cf73b7fbe5441';
-const AT_BASE_ID = 'https://airtable.com/appEiZDN5IcHoGjSe/tblgklfOOf3OlrvaZ/viwFZnYHrFqvIFrDL/recCCZjGfuev5NDKs?blocks=hide';
-const AT_TABLE_NAME = 'Dp'; // আপনার টেবিলের নাম
+const AT_BASE_ID = 'appEiZDN5IcHoGjSe';
+const AT_TABLE_NAME = 'Table 1'; // আপনার টেবিলের নাম
 
 function openForm(method, number) {
     document.getElementById('deposit-form').classList.remove('hidden');

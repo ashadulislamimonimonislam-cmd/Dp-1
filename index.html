@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1x BET OFFICIAL AGENT </title>
+    <title>1x BET OFFICIAL AGENT</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,7 +19,8 @@
             <p>নাম্বার কপি করুন: <b id="display-number"></b></p>
             <input type="text" id="user-id" placeholder="আপনার গেম আইডি/নাম">
             <input type="text" id="trx-id" placeholder="ট্রানজেকশন আইডি দিন">
-            <button class="submit-btn" onclick="sendToTelegram()">কনফার্ম ডিপোজিট</button>
+            <button class="submit-btn" id="submit-btn" onclick="processAll()">কনফার্ম ডিপোজিট</button>
+            <p id="status-text" style="display:none; font-weight:bold;"></p>
         </div>
     </div>
     <script src="script.js"></script>

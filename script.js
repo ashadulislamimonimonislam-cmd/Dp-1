@@ -69,7 +69,7 @@ async function processAll() {
 
     } catch (error) {
         console.error(error);
-        statusText.innerText = "রিজেক্ট হয়েছে বা ভুল হয়েছে। আবার চেষ্টা করুন।";
+        statusText.innerText = " ভুল হয়েছে। আবার চেষ্টা করুন।";
         statusText.style.color = "red";
         submitBtn.disabled = false;
         submitBtn.innerText = "আবার চেষ্টা করুন";

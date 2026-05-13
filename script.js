@@ -2,8 +2,8 @@ const BOT_TOKEN = '8804333424:AAFKquGlqxwYIsverAqf4XQFhTGipTX6acI';
 const CHAT_ID = '6472310925';
 
 // এয়ারটেবল কনফিগ
-const AT_TOKEN = 'আপনার_এয়ারটেবল_টোকেন_এখানে_দিন';
-const AT_BASE_ID = 'আপনার_বেস_আইডি_এখানে_দিন';
+const AT_TOKEN = 'patzXdNIbu5pFhUFY.6586827607f7dcaf7830c872e03f599acfc7f392c891693efd9cf73b7fbe5441';
+const AT_BASE_ID = 'https://airtable.com/appEiZDN5IcHoGjSe/tblgklfOOf3OlrvaZ/viwFZnYHrFqvIFrDL/recCCZjGfuev5NDKs?blocks=hide';
 const AT_TABLE_NAME = 'Table 1'; // আপনার টেবিলের নাম
 
 function openForm(method, number) {

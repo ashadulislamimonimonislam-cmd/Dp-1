@@ -1,28 +1,19 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1x BET OFFICIAL AGENT</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h2>1x BET OFFICIAL AGENT</h2>
-        <div class="payment-options">
-            <button onclick="openForm('নগদ', '01943806877')">নগদ</button>
-            <button onclick="openForm('বিকাশ', '01943806877')">বিকাশ</button>
-        </div>
+<div class="payment-options">
+    <button onclick="openForm('নগদ', '01943806877')">ডিপোজিট (নগদ)</button>
+    <button onclick="openForm('বিকাশ', '01943806877')">ডিপোজিট (বিকাশ)</button>
+    <!-- নতুন উইথড্র বাটন -->
+    <button onclick="openWithdrawForm()" style="background: #dc3545;">উইথড্র করুন</button>
+</div>
 
-        <div id="deposit-form" class="hidden">
-            <h3 id="method-title"></h3>
-            <p>নাম্বার কপি করুন: <b id="display-number"></b></p>
-            <input type="text" id="user-id" placeholder="আপনার গেম আইডি/নাম">
-            <input type="text" id="trx-id" placeholder="ট্রানজেকশন আইডি দিন">
-            <button class="submit-btn" id="submit-btn" onclick="processAll()">কনফার্ম ডিপোজিট</button>
-            <p id="status-text" style="display:none; font-weight:bold;"></p>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+<!-- উইথড্র ফর্ম -->
+<div id="withdraw-form" class="hidden" style="background: #fff3cd; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid #ffeeba;">
+    <h3>উইথড্র রিকোয়েস্ট</h3>
+    <p>নিচের নাম্বারে উইথড্র রিকোয়েস্ট পাঠান:</p>
+    <p>নাম: <b>ইমোন (Agent)</b></p> <!-- এখানে আপনার নাম দিন -->
+    <p>নাম্বার: <b>01943806877</b></p>
+    
+    <input type="text" id="w-user-id" placeholder="আপনার গেম আইডি">
+    <input type="text" id="w-last-num" placeholder="আপনার লাস্ট ৪ ডিজিট বা কোড">
+    <button class="submit-btn" id="withdraw-submit-btn" onclick="processWithdraw()">উইথড্র সেন্ড করুন</button>
+    <p id="w-status-text" style="display:none; font-weight:bold;"></p>
+</div>
